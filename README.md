@@ -2,6 +2,7 @@
 Postgres:
 
 Trigger Procedure :
+
 CREATE OR REPLACE FUNCTION emp.emp_trigger()
     RETURNS trigger
     LANGUAGE 'plpgsql'
