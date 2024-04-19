@@ -33,9 +33,12 @@ app.post("/api/register", async (req, res) => {
         is_signed_in: true,
       },
     });
+    const all_user_data = await prisma.emp_data.findMany();
+    console.log(all_user_data)
     res.json({
       user_data,
-      message : "Logged in successfully"
+      message : "Logged in successfully",
+      all_user_data
     });
   } catch (err) {
     console.log(err);
@@ -67,9 +70,12 @@ app.post("/api/login", async (req, res) => {
         is_signed_in: true,
       },
     });
+    const all_user_data = await prisma.emp_data.findMany();
+    console.log(all_user_data)
     res.json({
       user_data,
-      message : "Logged in successfully"
+      message : "Logged in successfully",
+      all_user_data
     });
   } else {
     res.status(401).json({ message: "unauthorized" });
@@ -89,7 +95,7 @@ app.post("/api/logout", async (req, res) => {
       },
     });
     console.log("signed out");
-    res.status(200).json({ message: "signed out" });
+    res.status(200).json({ message: "Signed out successfully" });
   } catch (err) {
     console.log(err);
     res.json({
