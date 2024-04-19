@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
+
 function App() {
   const [username, setUsername] = useState("");
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const [loginOrRegister, setLoginOrRegister] = useState("register");
   const [id, setId] = useState(null);
 
@@ -19,7 +20,7 @@ function App() {
         toast.success(response.data.message);
       }
       setId(response.data.user_data.id);
-      setpassword("");
+      setPassword("");
     } catch (error) {
       if (
         error.response &&
@@ -34,7 +35,7 @@ function App() {
 
   async function logout() {
     const res = await axios.post("/api/logout", { id });
-    if (res.status == 200) {
+    if (res.status === 200) {
       toast.success(res.data.message);
     }
     setId(null);
@@ -42,60 +43,46 @@ function App() {
   }
 
   return (
-    <div className="bg-black h-screen flex items-center">
-      {!id && (
-        <>
-          <form className="w-64 mx-auto mb-12" onSubmit={handleSubmit}>
-            <h1 className="text-white text-center mb-2 text-2xl">Login Form</h1>
-            <input
-              type="text"
-              placeholder="username"
-              className="block w-full rounded-sm p-2 mb-2 border text-center "
-              value={username}
-              onChange={(ev) => setUsername(ev.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="password"
-              className="block w-full rounded-sm p-2 mb-2 border text-center"
-              value={password}
-              onChange={(ev) => setpassword(ev.target.value)}
-            />
-            <button className="bg-blue-500 text-white block w-full rounded-sm p-2">
-              {loginOrRegister === "register" ? "Register" : "Login"}
+    <div className="bg-gradient-to-br from-purple-900 to-blue-900 h-screen flex items-center">
+      {!id ? (
+        <form className="bg-white rounded-lg shadow-lg p-8 mx-auto max-w-md" onSubmit={handleSubmit}>
+          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">{loginOrRegister === "register" ? "Create an Account" : "Login"}</h1>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full rounded-lg p-2 mb-4 border-2 border-gray-300 focus:outline-none focus:border-blue-500"
+            value={username}
+            onChange={(ev) => setUsername(ev.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full rounded-lg p-2 mb-4 border-2 border-gray-300 focus:outline-none focus:border-blue-500"
+            value={password}
+            onChange={(ev) => setPassword(ev.target.value)}
+          />
+          <button className="bg-blue-500 text-white w-full rounded-lg py-2 font-bold hover:bg-blue-600 transition duration-300">
+            {loginOrRegister === "register" ? "Register" : "Login"}
+          </button>
+          <div className="text-center mt-4 text-gray-600">
+            {loginOrRegister === "register" ? "Already have an account?" : "Don't have an account?"}{" "}
+            <button
+              onClick={() => setLoginOrRegister(loginOrRegister === "register" ? "login" : "register")}
+              className="text-blue-500 focus:outline-none"
+            >
+              {loginOrRegister === "register" ? "Login here" : "Register here"}
             </button>
-            {loginOrRegister === "register" && (
-              <div className="text-center mr-2 text-white">
-                Already a user?{" "}
-                <button
-                  onClick={() => setLoginOrRegister("login")}
-                  className="text-white"
-                >
-                  Login here
-                </button>
-              </div>
-            )}
-            {loginOrRegister === "login" && (
-              <div className="text-center mr-2 text-white">
-                Not a existing user?
-                <button
-                  onClick={() => setLoginOrRegister("register")}
-                  className="text-white"
-                >
-                  Register here
-                </button>
-              </div>
-            )}
-          </form>
-        </>
-      )}
-      {!!id && (
-        <div className="text-white mx-auto h-screen flex flex-col w-2/4">
-          <h1 className="text-center">Home page</h1>
-          <div className="text-white flex-auto align-middle flex items-center justify-center">
-            You&apos;re logged in as {username} , your emp id is {id}
           </div>
-          <button onClick={logout}>Log Out</button>
+        </form>
+      ) : (
+        <div className="text-white mx-auto h-screen flex flex-col w-2/4">
+          <h1 className="text-3xl font-bold mb-6 text-center">Welcome</h1>
+          <div className="text-white flex-auto align-middle flex items-center justify-center">
+            You &apos;re logged in as {username}, your emp id is {id}
+          </div>
+          <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded-lg mt-4 self-center hover:bg-red-600 transition duration-300 focus:outline-none">
+            Log Out
+          </button>
         </div>
       )}
       <Toaster />
