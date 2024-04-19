@@ -14,6 +14,17 @@ app.get("/test", (req, res) => {
 app.post("/api/register", async (req, res) => {
   const { username, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, salt);
+  const username_check = await prisma.emp_data.findFirst({
+    where : {
+      emp_name : username
+    }
+  });
+  if(username_check){
+    res.status(409).json({
+      message : "Username already Exists"
+    });
+    return
+  }
   try {
     const user_data = await prisma.emp_data.create({
       data: {
@@ -24,6 +35,7 @@ app.post("/api/register", async (req, res) => {
     });
     res.json({
       user_data,
+      message : "Logged in successfully"
     });
   } catch (err) {
     console.log(err);
@@ -40,6 +52,11 @@ app.post("/api/login", async (req, res) => {
       emp_name: username,
     },
   });
+  if(!user_data){
+    res.status(404).json({
+      message : "The username does not exist"
+    })
+  }
   const auth = bcrypt.compareSync(password, user_data.emp_password);
   if (auth) {
     await prisma.emp_data.update({
@@ -52,6 +69,7 @@ app.post("/api/login", async (req, res) => {
     });
     res.json({
       user_data,
+      message : "Logged in successfully"
     });
   } else {
     res.status(401).json({ message: "unauthorized" });
